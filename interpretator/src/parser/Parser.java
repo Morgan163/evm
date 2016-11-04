@@ -13,22 +13,32 @@ import java.util.ArrayList;
  */
 public class Parser {
     static int globalIndexHelper = 0;
+    static boolean integerTypeHelper = false;
+    
     public static Object getTokenFromString(StringBuilder s, int startIndex, Object result) throws InvalidStringFormatException{
+        globalIndexHelper = startIndex;
         while(true){
-            if( s.charAt(startIndex) == ']')
+            if(globalIndexHelper >= s.length())
+                return result;
+            if(s.charAt(globalIndexHelper) == ']'){
+                globalIndexHelper++;
+                integerTypeHelper = false;
                  return result;
-            else if( s.charAt(startIndex) == '[') {
+            }
+            else if( s.charAt(globalIndexHelper) == '[') {
                     ArrayList list = (ArrayList)result;
                     Object nextResult = null;
-                    if (s.charAt(startIndex + 1) == '[') {
+                    if (s.charAt(globalIndexHelper + 1) == '[') {
                         nextResult = new ArrayList();
+                        integerTypeHelper = false;
                     }
-                    else if (Character.isDigit(s.charAt(startIndex + 1))) {
+                    else if (Character.isDigit(s.charAt(globalIndexHelper + 1))) {
                         nextResult = new Integer(0);
+                        integerTypeHelper = true;
                     }
-                    startIndex += 1;                
-                    list.add(getTokenFromString(s, startIndex, nextResult));
-                    startIndex = globalIndexHelper;
+                    globalIndexHelper++;                
+                    list.add(getTokenFromString(s, globalIndexHelper, nextResult));
+                    if(integerTypeHelper) globalIndexHelper++;
                 }
             else if (Character.isDigit(s.charAt(startIndex))) {
                 globalIndexHelper = startIndex;
@@ -37,6 +47,7 @@ public class Parser {
                     number.append(s.charAt(globalIndexHelper));
                     globalIndexHelper++;
                 }
+                
                 return Integer.valueOf(number.toString());            
             }
             else
