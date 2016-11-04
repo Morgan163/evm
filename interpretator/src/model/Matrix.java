@@ -38,7 +38,7 @@ public class Matrix {
         return out.toString();
     }
 
-    public String createString(StringBuilder s,  Object matr){
+    private void createString(StringBuilder s,  Object matr){
         if(matr instanceof ArrayList){
             for(int j=0;j<((ArrayList) matr).size();j++){
                 s.append("[");
@@ -49,6 +49,5 @@ public class Matrix {
         else{
             s.append(matr);
         }
-        return s.toString();
     }
 }
