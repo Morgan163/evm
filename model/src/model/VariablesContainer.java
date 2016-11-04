@@ -1,3 +1,5 @@
+package model;
+
 import java.util.ArrayList;
 
 /**
@@ -30,7 +32,7 @@ public class VariablesContainer {
             }
         }
         if(foundVariable==null){
-            throw  new NotFoundVariableException("Variable by name not found");
+            throw  new NotFoundVariableException("model.Variable by name not found");
         }else{
             return foundVariable;
         }
@@ -45,7 +47,7 @@ public class VariablesContainer {
             }
         }
         if(!isFound){
-            throw  new NotFoundVariableException("Variable by name not found");
+            throw  new NotFoundVariableException("model.Variable by name not found");
         }
     }
 
@@ -62,7 +64,7 @@ public class VariablesContainer {
             }
         }
         if(!isFound){
-            throw  new NotFoundVariableException("Variable by name not found");
+            throw  new NotFoundVariableException("model.Variable by name not found");
         }
     }
 
