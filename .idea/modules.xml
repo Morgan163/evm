@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/evm.iml" filepath="$PROJECT_DIR$/evm.iml" />
-      <module fileurl="file://$PROJECT_DIR$/model/model.iml" filepath="$PROJECT_DIR$/model/model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/interpretator/interpretator.iml" filepath="$PROJECT_DIR$/interpretator/interpretator.iml" />
     </modules>
   </component>
 </project>

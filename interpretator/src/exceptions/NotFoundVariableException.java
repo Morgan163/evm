@@ -1,4 +1,4 @@
-package model;
+package exceptions;
 
 /**
  * Created by андрей on 04.11.2016.

@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.NotFoundVariableException;
+
 import java.util.ArrayList;
 
 /**
