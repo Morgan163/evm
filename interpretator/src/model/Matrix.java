@@ -25,26 +25,30 @@ public class Matrix {
     }
 
     public String toString(){
-        StringBuilder out = new StringBuilder("[");
+        StringBuilder out = new StringBuilder("");
         for (int i =0;i<matrix.size();i++){
             out.append("[");
-            createString(out,i,(ArrayList)matrix.get(i));
+            if(matrix.get(i) instanceof ArrayList) {
+                createString(out, i, matrix.get(i));
+            }else{
+                out.append(matrix.get(i));
+            }
             out.append("]");
         }
         return out.toString();
     }
 
-    public String createString(StringBuilder s, int i, ArrayList<Object> matr){
-        if(matr.get(i) instanceof ArrayList){
-            for(int j=0;j<((ArrayList) matr.get(i)).size();j++){
+    public String createString(StringBuilder s, int i, Object matr){
+        if(matr instanceof ArrayList){
+            for(int j=0;j<((ArrayList) matr).size();j++){
                 s.append("[");
-                createString(s, j,(ArrayList) matr.get(j));
+                createString(s, j,((ArrayList) matr).get(j));
                 s.append("]");
             }
         }
         else{
             s.append("[")
-                    .append(matr.get(i))
+                    .append(matr)
                     .append("]");
         }
         return s.toString();
