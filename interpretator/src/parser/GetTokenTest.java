@@ -20,7 +20,7 @@ public class GetTokenTest {
         System.out.println("");
         Scanner in = new Scanner(System.in);
         String s = in.nextLine();
-        ArrayList<Object> list = new ArrayList<>();
+        ArrayList<Object> list = new ArrayList<Object>();
          
         try {
             Matrix m = new Matrix((ArrayList<Object>) Parser.getTokenFromString(new StringBuilder(s), 0, list));

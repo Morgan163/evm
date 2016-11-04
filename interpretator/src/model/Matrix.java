@@ -29,7 +29,7 @@ public class Matrix {
         for (int i =0;i<matrix.size();i++){
             out.append("[");
             if(matrix.get(i) instanceof ArrayList) {
-                createString(out, i, matrix.get(i));
+                createString(out, matrix.get(i));
             }else{
                 out.append(matrix.get(i));
             }
@@ -38,18 +38,16 @@ public class Matrix {
         return out.toString();
     }
 
-    public String createString(StringBuilder s, int i, Object matr){
+    public String createString(StringBuilder s,  Object matr){
         if(matr instanceof ArrayList){
             for(int j=0;j<((ArrayList) matr).size();j++){
                 s.append("[");
-                createString(s, j,((ArrayList) matr).get(j));
+                createString(s,((ArrayList) matr).get(j));
                 s.append("]");
             }
         }
         else{
-            s.append("[")
-                    .append(matr)
-                    .append("]");
+            s.append(matr);
         }
         return s.toString();
     }
