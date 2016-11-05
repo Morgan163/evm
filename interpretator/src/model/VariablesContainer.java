@@ -40,6 +40,20 @@ public class VariablesContainer {
         }
     }
 
+    public boolean isVariableExist(String variableName){
+        Variable foundVariable = null;
+        for (Variable variable:variables){
+            if(variable.getVariableName().equals(variableName)){
+                foundVariable =  variable;
+            }
+        }
+        if(foundVariable==null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public void setVariable(Variable newVariable) throws NotFoundVariableException {
         boolean isFound = false;
         for (int i=0;i<variables.size();i++){

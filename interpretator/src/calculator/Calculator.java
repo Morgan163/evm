@@ -65,10 +65,10 @@ public class Calculator {
         else if((a instanceof Integer)&&(b instanceof  Integer)){
             switch (symbol){
                 case "+":
-                    a=(Integer)a+(Integer)b;
+                    a=((int)a+(int)b);
                     break;
                 case "-":
-                    a=(Integer)a-(Integer)b;
+                    a=(int)a-(int)b;
             }
         }
     }
