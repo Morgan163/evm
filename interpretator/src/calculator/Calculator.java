@@ -51,11 +51,12 @@ public class Calculator {
         }
     }
 
-    private void calculate(Object a, Object b, String symbol) throws CannotPossiblyCalculateException {
+    private ArrayList<Object> calculate(ArrayList<Object>result,Object a, Object b, String symbol) throws CannotPossiblyCalculateException {
         if((a instanceof ArrayList)&&(b instanceof  ArrayList)) {
             if (((ArrayList) a).size() == ((ArrayList) b).size()) {
                 for (int j = 0; j < ((ArrayList) a).size(); j++) {
-                    calculate(((ArrayList) a).get(j), ((ArrayList) b).get(j), symbol);
+                    result.add(new ArrayList<Object>());
+                    calculate((ArrayList<Object>)result.get(j),((ArrayList) a).get(j), ((ArrayList) b).get(j), symbol);
                 }
             }
             else{
@@ -65,27 +66,30 @@ public class Calculator {
         else if((a instanceof Integer)&&(b instanceof  Integer)){
             switch (symbol){
                 case "+":
-                    a=((int)a+(int)b);
+                    result.add(((int)a+(int)b));
                     break;
                 case "-":
-                    a=(int)a-(int)b;
+                    result.add((int)a-(int)b);
             }
         }
+        return result;
     }
 
     private Matrix calculatePlusOrMinus(Matrix a, Matrix b, String symbol) throws CannotPossiblyCalculateException {
-        Matrix result = new Matrix(a.getMatrix());
+        Matrix result = null;
         if(a.length()==b.length()){
-            ArrayList<Object> res = result.getMatrix();
+            ArrayList<Object> res = new ArrayList<>();
+            ArrayList<Object> matrA = a.getMatrix();
             ArrayList<Object> matrB = b.getMatrix();
-            for (int i=0;i<res.size();i++){
-                if(res.get(i) instanceof ArrayList) {
-                    calculate(res.get(i), matrB.get(i), "+");
+            for (int i=0;i<matrA.size();i++){
+                if(matrA.get(i) instanceof ArrayList) {
+                    res.add(new ArrayList<Object>());
+                    calculate((ArrayList)res.get(i),matrA.get(i), matrB.get(i), symbol);
                 }else{
-                    res.set(i,(Integer)res.get(i)+(Integer)matrB.get(i));
+                    res.add((Integer)res.get(i)+(Integer)matrB.get(i));
                 }
             }
-            result.setMatrix(res);
+            result = new Matrix(res);
         }
         return result;
     }
