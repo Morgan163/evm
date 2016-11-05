@@ -3,12 +3,12 @@ package exceptions;
 /**
  * Created by андрей on 04.11.2016.
  */
-public class CannotPossiblyCalculate extends Exception {
-    public CannotPossiblyCalculate(String message) {
+public class CannotPossiblyCalculateException extends Exception {
+    public CannotPossiblyCalculateException(String message) {
         super(message);
     }
 
-    public CannotPossiblyCalculate(String message, Throwable cause) {
+    public CannotPossiblyCalculateException(String message, Throwable cause) {
         super(message, cause);
     }
 }
