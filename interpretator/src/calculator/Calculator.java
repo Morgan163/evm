@@ -33,8 +33,10 @@ public class Calculator {
             if (((ArrayList) a).get(i) instanceof ArrayList){
                 calculateMultiply(((ArrayList) a).get(i),b);
             }else{
-                matrixMultiplicationByNumber((int)((ArrayList) a).get(i), b);
-                ((ArrayList) a).set(i,b);
+                ArrayList<Object> c = new ArrayList<>();
+                cloneArrayList(c,(ArrayList)b);
+                matrixMultiplicationByNumber((int)((ArrayList) a).get(i), c);
+                ((ArrayList) a).set(i,c);
             }
         }
     }
@@ -86,5 +88,17 @@ public class Calculator {
             result.setMatrix(res);
         }
         return result;
+    }
+
+    private void cloneArrayList(ArrayList<Object> c,ArrayList<Object> b){
+        for (int i=0;i<b.size();i++){
+            if(b.get(i) instanceof ArrayList){
+                c.add(b.get(i));
+                cloneArrayList((ArrayList)c.get(i), (ArrayList)b.get(i));
+            }else{
+                c.add(new Integer((int)b.get(i)));
+            }
+        }
+
     }
 }
