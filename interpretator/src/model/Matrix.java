@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.OutOfMatrixBoundsException;
+
 import java.util.ArrayList;
 
 /**
@@ -22,6 +24,18 @@ public class Matrix {
 
     public int length(){
         return matrix.size();
+    }
+
+    public Object getObjectByIndex(int [] indexs) throws OutOfMatrixBoundsException {
+        Object result = matrix.get(indexs[0]);
+        for (int i = 1;i<indexs.length;i++){
+            if(((ArrayList)result).get(i) instanceof ArrayList) {
+                result = ((ArrayList) result).get(i);
+            }else{
+                throw new OutOfMatrixBoundsException("invalid index");
+            }
+        }
+        return result;
     }
 
     public String toString(){

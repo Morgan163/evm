@@ -5,6 +5,8 @@
  */
 package parser;
 
+import exceptions.InvalidStringFormatException;
+
 import java.util.ArrayList;
 
 /**
@@ -15,7 +17,7 @@ public class Parser {
     static int globalIndexHelper = 0;
     static boolean integerTypeHelper = false;
     
-    public static Object getTokenFromString(StringBuilder s, int startIndex, Object result) throws InvalidStringFormatException{
+    public static Object getTokenFromString(StringBuilder s, int startIndex, Object result) throws InvalidStringFormatException {
         globalIndexHelper = startIndex;
         while(true){
             if(globalIndexHelper >= s.length())
