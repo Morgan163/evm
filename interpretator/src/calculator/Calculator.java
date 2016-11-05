@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Created by андрей on 04.11.2016.
  */
-public class calculator {
+public class Calculator {
     
     public Matrix plus(Matrix a, Matrix b) throws CannotPossiblyCalculateException {
        return calculatePlusOrMinus(a,b,"+");
