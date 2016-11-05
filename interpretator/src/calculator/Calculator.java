@@ -23,30 +23,30 @@ public class Calculator {
         Matrix result = null;
         ArrayList<Object> matrA = a.getMatrix();
         ArrayList<Object> matrB = b.getMatrix();
-        calculateMultiply(matrA, matrB);
-        result = new Matrix(matrA);
+        ArrayList<Object> res = new ArrayList<>();
+        calculateMultiply(res,matrA, matrB);
+        result = new Matrix(res);
         return result;
     }
 
-    private void calculateMultiply(Object a, Object b){
+    private void calculateMultiply(Object res,Object a, Object b){
         for (int i = 0; i< ((ArrayList)a).size();i++) {
+            ((ArrayList)res).add(new ArrayList<>());
             if (((ArrayList) a).get(i) instanceof ArrayList){
-                calculateMultiply(((ArrayList) a).get(i),b);
+                calculateMultiply(((ArrayList) res).get(i),((ArrayList) a).get(i),b);
             }else{
-                ArrayList<Object> c = new ArrayList<>();
-                cloneArrayList(c,(ArrayList)b);
-                matrixMultiplicationByNumber((int)((ArrayList) a).get(i), c);
-                ((ArrayList) a).set(i,c);
+                matrixMultiplicationByNumber(((ArrayList)res).get(i),(int)((ArrayList) a).get(i), b);
             }
         }
     }
 
-    private void matrixMultiplicationByNumber(int a, Object b){
+    private void matrixMultiplicationByNumber(Object res,int a, Object b){
         for (int i = 0; i< ((ArrayList)b).size();i++) {
             if (((ArrayList) b).get(i) instanceof ArrayList){
-                matrixMultiplicationByNumber(a,((ArrayList) b).get(i));
+                ((ArrayList)res).add(new ArrayList<>());
+                matrixMultiplicationByNumber(((ArrayList) res).get(i),a,((ArrayList) b).get(i));
             }else{
-               ((ArrayList) b).set(i,(Integer)((ArrayList) b).get(i)*a);
+               ((ArrayList) res).add((Integer)((ArrayList) b).get(i)*a);
             }
         }
     }

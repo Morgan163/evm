@@ -22,12 +22,12 @@ public class CalculatorMain {
         try {
             Matrix m = new Matrix((ArrayList<Object>) Parser.getTokenFromString(new StringBuilder(s), 0, list));
             Matrix c = new Matrix((ArrayList<Object>) Parser.getTokenFromString(new StringBuilder(s), 0, list2));
-            Matrix res = calc.minus(m,c);
+            Matrix res = calc.multiply(m,c);
             System.out.println(res.toString());
         } catch (InvalidStringFormatException ex) {
             ex.printStackTrace();
-        }catch (CannotPossiblyCalculateException ex){
+        }/*catch (CannotPossiblyCalculateException ex){
             ex.printStackTrace();
-        }
+        }*/
     }
 }
