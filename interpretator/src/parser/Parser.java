@@ -5,9 +5,19 @@
  */
 package parser;
 
+import calculator.Calculator;
+import exceptions.CannotPossiblyCalculateException;
+import exceptions.IndefinedVariableException;
 import exceptions.InvalidStringFormatException;
+import exceptions.NotFoundVariableException;
+import exceptions.OutOfMatrixBoundsException;
+import exceptions.UnsupportedSymbolException;
+import exceptions.SymbolExpectedException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import model.Matrix;
+import model.VariablesContainer;
 
 /**
  *
@@ -16,6 +26,19 @@ import java.util.ArrayList;
 public class Parser {
     static int globalIndexHelper = 0;
     static boolean integerTypeHelper = false;
+    static HashMap<Character, int[]> weights;
+    {
+        weights = new HashMap<>();
+        weights.put('(', new int[]{100, 0});
+        weights.put(')', new int[]{0, -1});
+        weights.put('+', new int[]{2, 2});
+        weights.put('-', new int[]{2, 2});
+        weights.put('*', new int[]{3, 3});
+        weights.put('/', new int[]{3, 3});
+    }
+    
+    static HashMap<Character, String> operands;
+    
     
     public static Object getTokenFromString(StringBuilder s, int startIndex, Object result) throws InvalidStringFormatException {
         globalIndexHelper = startIndex;
@@ -57,4 +80,299 @@ public class Parser {
             }
         
     }
+    
+    public static StringBuilder modifyRightPart(String s) throws NotFoundVariableException, OutOfMatrixBoundsException, IndefinedVariableException, SymbolExpectedException{
+        StringBuilder right = new StringBuilder("");
+        ArrayList<String> container  = new ArrayList<>();
+        if (s.contains(":=")) {
+            right = new StringBuilder(s.split(":=")[1].trim());
+            //replace all vars
+            VariablesContainer vars = VariablesContainer.getVariablesContainer();
+            for (int i = 0; i < right.length(); i++) {
+                StringBuilder variable = new StringBuilder("");
+                while( i < right.length() && Character.isLetter(right.charAt(i))){
+                    variable.append(right.charAt(i));
+                    i++;
+                }
+                if (!variable.toString().equals("")) {
+                    int[] indexes = null;
+                    if (vars.isVariableExist(variable.toString())) {
+                        if ( i < right.length() && right.charAt(i) == '[') {
+                            int j = i;
+                            while(j < right.length() && right.charAt(j) != '+' && right.charAt(j) != '-' && right.charAt(j) != '*' ){
+                                j++;
+                            }
+                            j--;
+                            indexes = getIndexes(right, i, j);
+                            Object obj = vars.getVariableByName(variable.toString()).getMatrix().getObjectByIndex(indexes);                           
+                            
+                            right.replace(i - variable.length(), j, (new Matrix((ArrayList)obj)).toString());
+                            
+                        }
+                        else{
+                            Object obj = vars.getVariableByName(variable.toString()).getMatrix().getObjectByIndex(indexes);                           
+                            right.replace(i - variable.length(), i, (new Matrix((ArrayList)obj)).toString());
+                            
+                        }
+                    }
+                    else{
+                        throw new IndefinedVariableException(variable.toString());
+                    }
+                }
+            }
+        }
+        
+        return right;
+    }
+    
+    public static int[] getIndexes(StringBuilder s, int i, int j) throws SymbolExpectedException{
+        int start = i;
+        int end = j;
+        ArrayList<Integer> list = new ArrayList<>();
+        StringBuilder index = new StringBuilder("");
+        while(start <= end){
+            if(Character.isDigit(s.charAt(start))) {
+                index.append(s.charAt(start));
+            }
+            if (s.charAt(start) == ']') {
+                if (!index.toString().equals("")) {
+                    list.add(Integer.valueOf(index.toString()));
+                    index = new StringBuilder("");
+                }
+            }
+            start++;
+            
+        }
+        if (index.toString() != "") {
+            throw new SymbolExpectedException(']');
+        }
+        int[] indexes = new int[list.size()];
+        for (int k = 0; k < indexes.length; k++) {
+            indexes[k] = list.get(k);
+        }
+        return indexes;
+            
+    }
+    
+    public static String getPOLIZ(StringBuilder s) throws InvalidStringFormatException, SymbolExpectedException{
+        StringBuilder poliz = new StringBuilder("");
+        
+        ArrayList<Character> stack = new ArrayList<>();
+        int pos = 0;
+        
+        StringBuilder operand = new StringBuilder("");
+        int code = 129;
+        
+        operands = new HashMap<>();
+        int i = 0;
+        while(i < s.length()){
+            switch(s.charAt(i)){
+                case '-': {
+                    if (!operand.toString().equals("")) {
+                        operands.put((char) code, operand.toString());
+                        operand = new StringBuilder("");
+                        poliz.append((char)code);
+                        code++;
+                    }
+                    else{ 
+                        throw new InvalidStringFormatException(s.toString(), i);
+                    }
+                    if (pos == 0) {
+                        stack.add('-');
+                        pos++;
+                    }
+                    else if (weights.get('-')[0] > weights.get(stack.get(pos))[1]) {
+                        stack.add('-');
+                        pos++;
+                    }
+                    else {
+                        while((pos >=0) && weights.get('-')[0] <= weights.get(stack.get(pos))[1]){
+                            poliz.append(stack.get(pos).toString());
+                            stack.remove(pos);
+                            pos--;
+                        }
+                        stack.add('-');
+                        pos++;
+                    }
+                    break;
+                }
+                case '+':{
+                    if (!operand.toString().equals("")) {
+                        operands.put((char) code, operand.toString());
+                        operand = new StringBuilder("");
+                        poliz.append((char)code);
+                        code++;
+                    }
+                    else{ 
+                        throw new InvalidStringFormatException(s.toString(), i);
+                    }
+                    
+                    if (pos == 0) {
+                        stack.add('+');
+                        pos++;
+                    }
+                    else if (weights.get('+')[0] > weights.get(stack.get(pos))[1]) {
+                        stack.add('+');
+                        pos++;
+                    }
+                    else {
+                        while((pos >=0) && weights.get('+')[0] <= weights.get(stack.get(pos))[1]){
+                            poliz.append(stack.get(pos).toString());
+                            stack.remove(pos);
+                            pos--;
+                        }
+                        stack.add('+');
+                        pos++;
+                    }
+                    break;
+                }
+                case '*': {
+                    if (!operand.toString().equals("")) {
+                        operands.put((char) code, operand.toString());
+                        operand = new StringBuilder("");
+                        poliz.append((char)code);
+                        code++;
+                    }
+                    else{ 
+                        throw new InvalidStringFormatException(s.toString(), i);
+                    }
+                    
+                    if (pos == 0) {
+                        stack.add('*');
+                        pos++;
+                    }
+                    else if (weights.get('*')[0] > weights.get(stack.get(pos))[1]) {
+                        stack.add('*');
+                        pos++;
+                    }
+                    else {
+                        while((pos >=0) && weights.get('*')[0] <= weights.get(stack.get(pos))[1]){
+                            poliz.append(stack.get(pos).toString());
+                            stack.remove(pos);
+                            pos--;
+                        }
+                        stack.add('*');
+                        pos++;
+                    }
+                    break;
+                }
+                
+                case '(': {
+                    if (!operand.toString().equals("")) {
+                        operands.put((char) code, operand.toString());
+                        operand = new StringBuilder("");
+                        poliz.append((char)code);
+                        code++;
+                    }
+                    else{ 
+                        throw new InvalidStringFormatException(s.toString(), i);
+                    }
+                    
+                    if (pos == 0) {
+                        stack.add('(');
+                        pos++;
+                    }
+                    else if (weights.get('(')[0] > weights.get(stack.get(pos))[1]) {
+                        stack.add('(');
+                        pos++;
+                    }
+                    else {
+                        while((pos >=0) && weights.get('(')[0] <= weights.get(stack.get(pos))[1]){
+                            poliz.append(stack.get(pos).toString());
+                            stack.remove(pos);
+                            pos--;
+                        }
+                        stack.add('(');
+                        pos++;
+                    }
+                    break;
+                }
+                case ')': {
+                    if (!operand.toString().equals("")) {
+                        operands.put((char) code, operand.toString());
+                        operand = new StringBuilder("");
+                        poliz.append((char)code);
+                        code++;
+                    }
+                    else{ 
+                        throw new InvalidStringFormatException(s.toString(), i);
+                    }
+                    while(pos >= 0 && !stack.get(pos).equals('('))
+                    {   
+                        poliz.append(stack.get(pos));
+                        stack.remove(i);
+                        pos--;
+                    }
+                    if (pos >= 0 && stack.get(pos).equals('(')) {
+                        stack.remove('(');
+                    }
+                    break;
+                }
+                default : {
+                    operand.append(s.charAt(i));
+                }
+            }
+            i++;
+        }
+        while (!stack.isEmpty()) {
+            if(stack.get(pos).equals('(')){
+                throw new SymbolExpectedException(')'); 
+            }
+            poliz.append(stack.get(pos));
+            stack.remove(pos);
+            pos--;
+        }
+        return poliz.toString();
+    }
+    
+    public static Matrix getMatrixFromPoliz(String poliz) throws InvalidStringFormatException, CannotPossiblyCalculateException, UnsupportedSymbolException{
+        int i = 0;
+        
+        ArrayList<Matrix> stack = new ArrayList<>();
+        int pos = 0;
+        Calculator calc = new Calculator();
+        while(i < poliz.length()){
+            if (Character.isLetter(poliz.charAt(i))) {
+                Matrix operand;
+                ArrayList<Object> matrix = new ArrayList<>();
+                String token;
+                token = operands.get(poliz.charAt(i));
+                operand = new Matrix( (ArrayList<Object>) getTokenFromString(new StringBuilder(token), 0, matrix));
+                stack.add(operand);
+                pos++;
+            }
+            else {
+                Matrix operand1 = stack.get(pos);
+                stack.remove(pos);
+                pos--;
+                Matrix operand2 = stack.get(pos);
+                stack.remove(pos);
+                pos--;
+                Matrix result = null;
+                switch(poliz.charAt(i)){
+                    case '+':{
+                        result = calc.plus(operand1, operand2);
+                        break;
+                    }
+                    case '-':{
+                        result = calc.minus(operand1, operand2);
+                        break;
+                    }
+                        
+                    case '*':{
+                        result = calc.multiply(operand1, operand2);
+                        break;
+                    }
+                }
+                if (result == null) {
+                    throw new UnsupportedSymbolException(poliz.charAt(i));
+                }
+                stack.add(result);
+                pos++;
+            }
+            i++;
+        }
+        return stack.get(0);
+    }
+
 }
