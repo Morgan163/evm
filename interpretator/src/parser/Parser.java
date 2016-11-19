@@ -158,6 +158,15 @@ public class Parser {
         if (!(s.toString().contains("*") || s.toString().contains("+") || s.toString().contains("-"))) {
             return s.toString();
         }
+        if(weights == null){
+              weights = new HashMap<>();
+        weights.put('(', new int[]{100, 0});
+        weights.put(')', new int[]{0, -1});
+        weights.put('+', new int[]{2, 2});
+        weights.put('-', new int[]{2, 2});
+        weights.put('*', new int[]{3, 3});
+        weights.put('/', new int[]{3, 3});
+        }
         StringBuilder poliz = new StringBuilder("");
         
         ArrayList<Character> stack = new ArrayList<>();
@@ -215,12 +224,12 @@ public class Parser {
                         stack.add('+');
                         pos++;
                     }
-                    else if (weights.get('+')[0] > weights.get(stack.get(pos))[1]) {
+                    else if (weights.get('+')[0] > weights.get(stack.get(pos-1))[1]) {
                         stack.add('+');
                         pos++;
                     }
                     else {
-                        while((pos >0) && weights.get('+')[0] <= weights.get(stack.get(pos))[1]){
+                        while((pos >0) && weights.get('+')[0] <= weights.get(stack.get(pos-1))[1]){
                              pos--;
                             poliz.append(stack.get(pos).toString());
                             stack.remove(pos);
@@ -246,12 +255,12 @@ public class Parser {
                         stack.add('*');
                         pos++;
                     }
-                    else if (weights.get('*')[0] > weights.get(stack.get(pos))[1]) {
+                    else if (weights.get('*')[0] > weights.get(stack.get(pos-1))[1]) {
                         stack.add('*');
                         pos++;
                     }
                     else {
-                        while((pos >0) && weights.get('*')[0] <= weights.get(stack.get(pos))[1]){
+                        while((pos >0) && weights.get('*')[0] <= weights.get(stack.get(pos-1))[1]){
                             pos--;
                             poliz.append(stack.get(pos).toString());
                             stack.remove(pos);
@@ -278,12 +287,12 @@ public class Parser {
                         stack.add('(');
                         pos++;
                     }
-                    else if (weights.get('(')[0] > weights.get(stack.get(pos))[1]) {
+                    else if (weights.get('(')[0] > weights.get(stack.get(pos-1))[1]) {
                         stack.add('(');
                         pos++;
                     }
                     else {
-                        while((pos >0) && weights.get('(')[0] <= weights.get(stack.get(pos))[1]){
+                        while((pos >0) && weights.get('(')[0] <= weights.get(stack.get(pos-1))[1]){
                             pos--;
                             poliz.append(stack.get(pos).toString());
                             stack.remove(pos);
@@ -304,14 +313,14 @@ public class Parser {
                     else{ 
                         throw new InvalidStringFormatException(s.toString(), i);
                     }
-                    while(pos > 0 && !stack.get(pos).equals('('))
+                    while(pos > 0 && !stack.get(pos-1).equals('('))
                     {   
                         pos--;
                         poliz.append(stack.get(pos));
                         stack.remove(i);
                         
                     }
-                    if (pos >= 0 && stack.get(pos).equals('(')) {
+                    if (pos >= 0 && stack.get(pos-1).equals('(')) {
                         stack.remove('(');
                     }
                     break;
