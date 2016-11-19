@@ -86,13 +86,18 @@ public class Calculator {
                     res.add(new ArrayList<Object>());
                     calculate((ArrayList)res.get(i),matrA.get(i), matrB.get(i), symbol);
                 }else{
-                    switch (symbol){
-                        case "+":
-                            res.add((Integer)matrA.get(i)+(Integer)matrB.get(i));
+                    if(matrB.get(i) instanceof  Integer) {
+                        switch (symbol) {
+                            case "+":
+                                res.add((Integer) matrA.get(i) + (Integer) matrB.get(i));
 
-                            break;
-                        case "-":
-                            res.add((Integer)matrA.get(i)-(Integer)matrB.get(i));
+                                break;
+                            case "-":
+                                res.add((Integer) matrA.get(i) - (Integer) matrB.get(i));
+                        }
+                    }
+                    else{
+                        throw new CannotPossiblyCalculateException("Different matrix size");
                     }
                 }
             }
