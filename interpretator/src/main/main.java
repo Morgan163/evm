@@ -27,7 +27,7 @@ public class main {
                 } catch (NotFoundVariableException | OutOfMatrixBoundsException | IndefinedVariableException |
                         SymbolExpectedException| InvalidStringFormatException| UnsupportedSymbolException |
                         CannotPossiblyCalculateException e) {
-                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }else if(inputString.contains("=")){
                 String variableName = (inputString.split("="))[0];
@@ -41,7 +41,7 @@ public class main {
                 System.out.println("Not found '=' or ':=' operators");
             }
 
-
+            inputString = scanner.nextLine();
 
         }
     }

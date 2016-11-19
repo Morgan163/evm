@@ -155,13 +155,16 @@ public class Parser {
     }
     
     public static String getPOLIZ(StringBuilder s) throws InvalidStringFormatException, SymbolExpectedException{
+        if (!(s.toString().contains("*") || s.toString().contains("+") || s.toString().contains("-"))) {
+            return s.toString();
+        }
         StringBuilder poliz = new StringBuilder("");
         
         ArrayList<Character> stack = new ArrayList<>();
         int pos = 0;
         
         StringBuilder operand = new StringBuilder("");
-        int code = 129;
+        int code = 65;
         
         operands = new HashMap<>();
         int i = 0;
@@ -186,10 +189,11 @@ public class Parser {
                         pos++;
                     }
                     else {
-                        while((pos >=0) && weights.get('-')[0] <= weights.get(stack.get(pos))[1]){
+                        while((pos >0) && weights.get('-')[0] <= weights.get(stack.get(pos))[1]){
+                            pos--;
                             poliz.append(stack.get(pos).toString());
                             stack.remove(pos);
-                            pos--;
+                           
                         }
                         stack.add('-');
                         pos++;
@@ -216,10 +220,11 @@ public class Parser {
                         pos++;
                     }
                     else {
-                        while((pos >=0) && weights.get('+')[0] <= weights.get(stack.get(pos))[1]){
+                        while((pos >0) && weights.get('+')[0] <= weights.get(stack.get(pos))[1]){
+                             pos--;
                             poliz.append(stack.get(pos).toString());
                             stack.remove(pos);
-                            pos--;
+                           
                         }
                         stack.add('+');
                         pos++;
@@ -246,10 +251,11 @@ public class Parser {
                         pos++;
                     }
                     else {
-                        while((pos >=0) && weights.get('*')[0] <= weights.get(stack.get(pos))[1]){
+                        while((pos >0) && weights.get('*')[0] <= weights.get(stack.get(pos))[1]){
+                            pos--;
                             poliz.append(stack.get(pos).toString());
                             stack.remove(pos);
-                            pos--;
+                            
                         }
                         stack.add('*');
                         pos++;
@@ -277,10 +283,11 @@ public class Parser {
                         pos++;
                     }
                     else {
-                        while((pos >=0) && weights.get('(')[0] <= weights.get(stack.get(pos))[1]){
+                        while((pos >0) && weights.get('(')[0] <= weights.get(stack.get(pos))[1]){
+                            pos--;
                             poliz.append(stack.get(pos).toString());
                             stack.remove(pos);
-                            pos--;
+                            
                         }
                         stack.add('(');
                         pos++;
@@ -297,11 +304,12 @@ public class Parser {
                     else{ 
                         throw new InvalidStringFormatException(s.toString(), i);
                     }
-                    while(pos >= 0 && !stack.get(pos).equals('('))
+                    while(pos > 0 && !stack.get(pos).equals('('))
                     {   
+                        pos--;
                         poliz.append(stack.get(pos));
                         stack.remove(i);
-                        pos--;
+                        
                     }
                     if (pos >= 0 && stack.get(pos).equals('(')) {
                         stack.remove('(');
@@ -314,6 +322,13 @@ public class Parser {
             }
             i++;
         }
+        if (!operand.toString().equals("")) {
+                        operands.put((char) code, operand.toString());
+                        operand = new StringBuilder("");
+                        poliz.append((char)code);
+                        code++;
+                    }
+        pos--;
         while (!stack.isEmpty()) {
             if(stack.get(pos).equals('(')){
                 throw new SymbolExpectedException(')'); 
@@ -326,6 +341,11 @@ public class Parser {
     }
     
     public static Matrix getMatrixFromPoliz(String poliz) throws InvalidStringFormatException, CannotPossiblyCalculateException, UnsupportedSymbolException{
+         if (!(poliz.toString().contains("*") || poliz.toString().contains("+") || poliz.toString().contains("-"))) {
+            ArrayList<Object> matrix = new ArrayList<>();
+            Matrix result = new Matrix( (ArrayList<Object>) getTokenFromString(new StringBuilder(poliz), 0, matrix));
+            return result;
+        }
         int i = 0;
         
         ArrayList<Matrix> stack = new ArrayList<>();
@@ -342,12 +362,13 @@ public class Parser {
                 pos++;
             }
             else {
+                pos--;
                 Matrix operand1 = stack.get(pos);
                 stack.remove(pos);
                 pos--;
                 Matrix operand2 = stack.get(pos);
                 stack.remove(pos);
-                pos--;
+                
                 Matrix result = null;
                 switch(poliz.charAt(i)){
                     case '+':{
