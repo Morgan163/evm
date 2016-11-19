@@ -110,7 +110,7 @@ public class Parser {
                             
                         }
                         else{
-                            Object obj = vars.getVariableByName(variable.toString()).getMatrix().getObjectByIndex(indexes);                           
+                            Object obj = vars.getVariableByName(variable.toString()).getMatrix().getMatrix();                           
                             right.replace(i - variable.length(), i, (new Matrix((ArrayList)obj)).toString());
                             
                         }
@@ -143,7 +143,7 @@ public class Parser {
             start++;
             
         }
-        if (index.toString() != "") {
+        if (!index.toString().equals("")) {
             throw new SymbolExpectedException(']');
         }
         int[] indexes = new int[list.size()];
@@ -346,7 +346,7 @@ public class Parser {
             Matrix result = new Matrix( (ArrayList<Object>) getTokenFromString(new StringBuilder(poliz), 0, matrix));
             return result;
         }
-        int i = 0;
+            int i = 0;
         
         ArrayList<Matrix> stack = new ArrayList<>();
         int pos = 0;
