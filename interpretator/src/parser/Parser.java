@@ -193,12 +193,12 @@ public class Parser {
                         stack.add('-');
                         pos++;
                     }
-                    else if (weights.get('-')[0] > weights.get(stack.get(pos))[1]) {
+                    else if (weights.get('-')[0] > weights.get(stack.get(pos-1))[1]) {
                         stack.add('-');
                         pos++;
                     }
                     else {
-                        while((pos >0) && weights.get('-')[0] <= weights.get(stack.get(pos))[1]){
+                        while((pos >0) && weights.get('-')[0] <= weights.get(stack.get(pos-1))[1]){
                             pos--;
                             poliz.append(stack.get(pos).toString());
                             stack.remove(pos);
