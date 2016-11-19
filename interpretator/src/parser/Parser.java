@@ -381,16 +381,16 @@ public class Parser {
                 Matrix result = null;
                 switch(poliz.charAt(i)){
                     case '+':{
-                        result = calc.plus(operand1, operand2);
+                        result = calc.plus(operand2, operand1);
                         break;
                     }
                     case '-':{
-                        result = calc.minus(operand1, operand2);
+                        result = calc.minus(operand2, operand1);
                         break;
                     }
                         
                     case '*':{
-                        result = calc.multiply(operand1, operand2);
+                        result = calc.multiply(operand2, operand1);
                         break;
                     }
                 }
