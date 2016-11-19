@@ -27,7 +27,7 @@ public class main {
                 } catch (NotFoundVariableException | OutOfMatrixBoundsException | IndefinedVariableException |
                         SymbolExpectedException| InvalidStringFormatException| UnsupportedSymbolException |
                         CannotPossiblyCalculateException e) {
-                    e.printStackTrace();
+                    System.out.println(e.getMessage());
                 }
             }else if(inputString.contains("=")){
                 String variableName = (inputString.split("="))[0];

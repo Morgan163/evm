@@ -22,29 +22,39 @@ public class Matrix {
         this.matrix = matrix;
     }
 
-    public int length(){
+    public int length() {
         return matrix.size();
     }
 
-    public Object getObjectByIndex(int [] indexs) throws OutOfMatrixBoundsException {
-        Object result = matrix.get(indexs[0]);
-        for (int i = 1;i<indexs.length;i++){
-            if(((ArrayList)result).get(i) instanceof ArrayList) {
-                result = ((ArrayList) result).get(i);
-            }else{
+    public Object getObjectByIndex(int[] indexs) throws OutOfMatrixBoundsException {
+        Object result = null;
+        if (indexs[0] < matrix.size()) {
+            result = matrix.get(indexs[0]);
+        } else {
+            throw new OutOfMatrixBoundsException("invalid index");
+        }
+
+        for (int i = 1; i < indexs.length; i++) {
+            if (i < ((ArrayList) result).size()) {
+                if (((ArrayList) result).get(i) instanceof ArrayList) {
+                    result = ((ArrayList) result).get(i);
+                } else {
+                    throw new OutOfMatrixBoundsException("invalid index");
+                }
+            } else {
                 throw new OutOfMatrixBoundsException("invalid index");
             }
         }
         return result;
     }
 
-    public String toString(){
+    public String toString() {
         StringBuilder out = new StringBuilder("");
-        for (int i =0;i<matrix.size();i++){
+        for (int i = 0; i < matrix.size(); i++) {
             out.append("[");
-            if(matrix.get(i) instanceof ArrayList) {
+            if (matrix.get(i) instanceof ArrayList) {
                 createString(out, matrix.get(i));
-            }else{
+            } else {
                 out.append(matrix.get(i));
             }
             out.append("]");
@@ -52,15 +62,14 @@ public class Matrix {
         return out.toString();
     }
 
-    private void createString(StringBuilder s,  Object matr){
-        if(matr instanceof ArrayList){
-            for(int j=0;j<((ArrayList) matr).size();j++){
+    private void createString(StringBuilder s, Object matr) {
+        if (matr instanceof ArrayList) {
+            for (int j = 0; j < ((ArrayList) matr).size(); j++) {
                 s.append("[");
-                createString(s,((ArrayList) matr).get(j));
+                createString(s, ((ArrayList) matr).get(j));
                 s.append("]");
             }
-        }
-        else{
+        } else {
             s.append(matr);
         }
     }
