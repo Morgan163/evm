@@ -86,7 +86,14 @@ public class Calculator {
                     res.add(new ArrayList<Object>());
                     calculate((ArrayList)res.get(i),matrA.get(i), matrB.get(i), symbol);
                 }else{
-                    res.add((Integer)res.get(i)+(Integer)matrB.get(i));
+                    switch (symbol){
+                        case "+":
+                            res.add((Integer)matrA.get(i)+(Integer)matrB.get(i));
+
+                            break;
+                        case "-":
+                            res.add((Integer)matrA.get(i)-(Integer)matrB.get(i));
+                    }
                 }
             }
             result = new Matrix(res);
