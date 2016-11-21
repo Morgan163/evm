@@ -330,7 +330,7 @@ public class Parser {
                 }
             }
             i++;
-        }
+        } 
         if (!operand.toString().equals("")) {
                         operands.put((char) code, operand.toString());
                         operand = new StringBuilder("");
