@@ -273,15 +273,15 @@ public class Parser {
                 }
                 
                 case '(': {
-                    if (!operand.toString().equals("")) {
-                        operands.put((char) code, operand.toString());
-                        operand = new StringBuilder("");
-                        poliz.append((char)code);
-                        code++;
-                    }
-                    else{ 
-                        throw new InvalidStringFormatException(s.toString(), i);
-                    }
+//                    if (!operand.toString().equals("")) {
+//                        operands.put((char) code, operand.toString());
+//                        operand = new StringBuilder("");
+//                        poliz.append((char)code);
+//                        code++;
+//                    }
+//                    else{ 
+//                        throw new InvalidStringFormatException(s.toString(), i);
+//                    }
                     
                     if (pos == 0) {
                         stack.add('(');
@@ -317,11 +317,11 @@ public class Parser {
                     {   
                         pos--;
                         poliz.append(stack.get(pos));
-                        stack.remove(i);
+                        stack.remove(pos);
                         
                     }
-                    if (pos >= 0 && stack.get(pos-1).equals('(')) {
-                        stack.remove('(');
+                    if (pos > 0 && stack.get(pos-1).equals('(')) {
+                        stack.remove(pos-1);
                     }
                     break;
                 }
@@ -339,12 +339,13 @@ public class Parser {
                     }
         pos--;
         while (!stack.isEmpty()) {
+            pos--;
             if(stack.get(pos).equals('(')){
                 throw new SymbolExpectedException(')'); 
             }
             poliz.append(stack.get(pos));
             stack.remove(pos);
-            pos--;
+            
         }
         return poliz.toString();
     }
