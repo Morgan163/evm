@@ -158,6 +158,7 @@ public class Parser {
         if (!(s.toString().contains("*") || s.toString().contains("+") || s.toString().contains("-"))) {
             return s.toString();
         }
+        boolean checked = false;
         if(weights == null){
               weights = new HashMap<>();
         weights.put('(', new int[]{100, 0});
@@ -304,14 +305,17 @@ public class Parser {
                     break;
                 }
                 case ')': {
-                    if (!operand.toString().equals("")) {
-                        operands.put((char) code, operand.toString());
-                        operand = new StringBuilder("");
-                        poliz.append((char)code);
-                        code++;
-                    }
-                    else{ 
-                        throw new InvalidStringFormatException(s.toString(), i);
+                    if(!checked){
+                        if (!operand.toString().equals("")) {
+                            operands.put((char) code, operand.toString());
+                            operand = new StringBuilder("");
+                            poliz.append((char)code);
+                            code++;
+                            checked = true;
+                        }
+                        else{ 
+                            throw new InvalidStringFormatException(s.toString(), i);
+                        }
                     }
                     while(pos > 0 && !stack.get(pos-1).equals('('))
                     {   
@@ -328,6 +332,7 @@ public class Parser {
                 }
                 default : {
                     operand.append(s.charAt(i));
+                    checked = false;
                 }
             }
             i++;
