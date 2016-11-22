@@ -322,6 +322,7 @@ public class Parser {
                     }
                     if (pos > 0 && stack.get(pos-1).equals('(')) {
                         stack.remove(pos-1);
+                        pos--;
                     }
                     break;
                 }
@@ -339,7 +340,7 @@ public class Parser {
                     }
         pos--;
         while (!stack.isEmpty()) {
-            pos--;
+           // pos--;
             if(stack.get(pos).equals('(')){
                 throw new SymbolExpectedException(')'); 
             }
